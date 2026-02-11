@@ -1,7 +1,3 @@
-### 2. Frontend README Template
-**(File Location: `chatbot-UI/README.md`)**
-
-```markdown
 # 📱 JARVIS Chatbot Frontend - React UI
 
 A sleek, mobile-responsive chat interface inspired by the **Zong (OZ)** ecosystem. Built with **React** and **Tailwind CSS**.
@@ -23,19 +19,15 @@ A sleek, mobile-responsive chat interface inspired by the **Zong (OZ)** ecosyste
    ```bash
    cd chatbot-UI
 
-
 Install Packages:
+Bash
 npm install
 
-
-Configure Backend URL: Ensure App.jsx points to http://localhost:8000/chat.
-
 Launch App:
+Bash 
 npm run dev
+## 📸 Screenshots
 
-📸 Screenshots
-Welcome Screen
-<img src="../chatbot-screenshot/UI-1.png" width="250" alt="Welcome Screen">
-
-Interactive Chat Interface
-<img src="../chatbot-screenshot/UI-2.png" width="250" alt="Chat UI">
+| Welcome Screen | Interactive Chat Interface |
+|:---:|:---:|
+| <img src="chatbot-screenshot/UI-1.png" width="250" alt="Welcome Screen"> | <img src="chatbot-screenshot/UI-2.png" width="250" alt="Chat UI"> |
