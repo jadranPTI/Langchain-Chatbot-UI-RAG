@@ -2,7 +2,7 @@
 **(File Location: `chatbot-UI/README.md`)**
 
 ```markdown
-# 📱 OZ Chatbot Frontend - React UI
+# 📱 JARVIS Chatbot Frontend - React UI
 
 A sleek, mobile-responsive chat interface inspired by the **Zong (OZ)** ecosystem. Built with **React** and **Tailwind CSS**.
 
