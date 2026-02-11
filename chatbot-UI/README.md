@@ -1,16 +1,41 @@
-# React + Vite
+### 2. Frontend README Template
+**(File Location: `chatbot-UI/README.md`)**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+```markdown
+# 📱 OZ Chatbot Frontend - React UI
 
-Currently, two official plugins are available:
+A sleek, mobile-responsive chat interface inspired by the **Zong (OZ)** ecosystem. Built with **React** and **Tailwind CSS**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
+* **Modern UI**: Polished, mobile-first design with a clean user experience.
+* **Dynamic Welcome Screen**: Interactive "Hello, Ghulam!" start screen that transitions into chat.
+* **Smart Bubbles**: Color-coded chat bubbles (#19295D for User, #DDDDDD for Bot).
+* **Real-time API Integration**: Uses Axios to communicate with the FastAPI backend.
 
-## React Compiler
+## 🎨 UI Colors
+* **Primary (Navy)**: `#19295D`
+* **User Bubble (Navy)**: `#19295D`
+* **Bot Bubble (Light Grey)**: `#DDDDDD`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Quick Start
 
-## Expanding the ESLint configuration
+1. **Navigate to Folder**:
+   ```bash
+   cd chatbot-UI
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+Install Packages:
+npm install
+
+
+Configure Backend URL: Ensure App.jsx points to http://localhost:8000/chat.
+
+Launch App:
+npm run dev
+
+📸 Screenshots
+Welcome Screen
+<img src="../chatbot-screenshot/UI-1.png" width="250" alt="Welcome Screen">
+
+Interactive Chat Interface
+<img src="../chatbot-screenshot/UI-2.png" width="250" alt="Chat UI">
