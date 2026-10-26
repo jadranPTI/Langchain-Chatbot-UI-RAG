@@ -6,6 +6,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
   const chatEndRef = useRef(null);
 
   useEffect(() => {
@@ -13,7 +14,7 @@ function App() {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || isStreaming) return;
 
     const userTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const userMsg = { role: 'user', text: input, time: userTime };
@@ -24,18 +25,58 @@ function App() {
     setIsLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:8000/chat', {
-        query: currentInput,
-        device_id: "user_123" 
+      const response = await fetch('http://localhost:8000/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: currentInput,
+          device_id: "user_123"
+        }),
       });
 
-      const botMsg = { 
-        role: 'bot', 
-        text: res.data.response || "No response from server", 
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
-      };
-      setMessages(prev => [...prev, botMsg]);
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      const botTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      let accumulatedText = "";
+      let hasStartedStreaming = false;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        accumulatedText += chunk;
+
+        if (!hasStartedStreaming) {
+          hasStartedStreaming = true;
+          setIsLoading(false);
+          setIsStreaming(true);
+          setMessages(prev => [...prev, { role: 'bot', text: accumulatedText, time: botTime }]);
+        } else {
+          setMessages(prev => {
+            const updated = [...prev];
+            updated[updated.length - 1] = {
+              ...updated[updated.length - 1],
+              text: accumulatedText
+            };
+            return updated;
+          });
+        }
+      }
+
+      if (!hasStartedStreaming) {
+        setIsLoading(false);
+        setMessages(prev => [...prev, { role: 'bot', text: accumulatedText || "No response from server", time: botTime }]);
+      }
     } catch (error) {
+      console.error("Chat error:", error);
+      setIsLoading(false);
       setMessages(prev => [...prev, { 
         role: 'bot', 
         text: "Error connecting to server.", 
@@ -43,6 +84,7 @@ function App() {
       }]);
     } finally {
       setIsLoading(false);
+      setIsStreaming(false);
     }
   };
 
@@ -83,7 +125,7 @@ function App() {
             <div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
               <div 
                 style={{ backgroundColor: msg.role === 'user' ? '#19295d' : '#dddddd' }}
-                className={`max-w-[85%] p-4 rounded-[1.5rem] text-sm md:text-base shadow-sm ${
+                className={`max-w-[85%] p-4 rounded-[1.5rem] text-sm md:text-base shadow-sm whitespace-pre-wrap ${
                   msg.role === 'user' ? 'text-white rounded-br-none' : 'text-black rounded-bl-none'
                 }`}
               >
@@ -108,15 +150,17 @@ function App() {
           <div className="flex items-center bg-gray-50 rounded-full px-5 py-3 border border-gray-200 shadow-inner">
             <input 
               type="text" 
-              placeholder="Write your message..."
-              className="flex-1 bg-transparent outline-none text-gray-700"
+              placeholder={isLoading || isStreaming ? "Jarvis is replying..." : "Write your message..."}
+              disabled={isLoading || isStreaming}
+              className="flex-1 bg-transparent outline-none text-gray-700 disabled:opacity-50"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
             />
             <button 
               onClick={handleSend} 
-              className={`ml-2 font-bold ${!input.trim() ? 'text-gray-300' : 'text-[#19295d]'}`}
+              disabled={!input.trim() || isLoading || isStreaming}
+              className={`ml-2 font-bold ${(!input.trim() || isLoading || isStreaming) ? 'text-gray-300' : 'text-[#19295d]'}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 rotate-90">
                 <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
